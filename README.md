@@ -8,7 +8,7 @@ This projection includes source codes and some examples of ViSeH.
 ## Example
 To facilitate understanding of the mechanism of ViSeH, we provide some examples. Including [pretrained models](./model_save/resnet18), a [sub-hierarchy](./hierarchy), and several [samples](./data_food101_demo) from the Ingredient-101 dataset.
 
-Here is one of the case: predicting an image with ground-truth label [1] by the global model (Visual backbone) produces a wrong Top-1 prediction, and the predits of ground-truth is at Top-4. By introducing the VSHC and MMGF, the final output is correct.
+Here is one of the case: predicting an image with ground-truth **label 1** by the global model (Visual backbone) outputs wrong Top-1 prediction, and the correct predition is at Top-4. By introducing the VSHC and MMGF, the final output is refined.
 
 > Sample 0, Ground Truth label: 1
 
