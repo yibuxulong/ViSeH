@@ -6,7 +6,7 @@ This projection includes source codes and some examples of ViSeH.
 ### Online training
 ## Testing
 ## Example
-To facilitate understanding of the mechanism of ViSeH, we provide some examples. Includes [pretrained models](save_model), a [sub-hierarchy](hierarchy), and several [samples](data_food101_demo) from the Ingredient-101 dataset.
+To facilitate understanding of the mechanism of ViSeH, we provide some examples. Includes [pretrained models](./save_model), a [sub-hierarchy](./hierarchy), and several [samples](./data_food101_demo) from the Ingredient-101 dataset.
 
 > Sample 0, Ground Truth label: 1
 
