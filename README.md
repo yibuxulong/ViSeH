@@ -8,7 +8,7 @@ For quick start of using ViSeH, we provide runnable testing examples, including 
 * Python >= 3.6.5
 * torchvision >= 0.2.1
 ## Demo
-We provide some samples
+We provide some examples to demonstrate the mechanism of ViSeH.
 
     python test.py --result_path result/ --path_stage1 hierarchy/ --art_epoch 2
 
