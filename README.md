@@ -12,7 +12,7 @@ We provide some examples to demonstrate the mechanism of ViSeH.
 
     python test.py --result_path result/ --path_stage1 hierarchy/ --art_epoch 2
 
-Here is one of the cases: classifying an image with ground-truth label **1** by the global model (Visual backbone) outputs **wrong Top-1 prediction**, while the correct predition is at **Top-4**. By refining of the VSHC and MMGF modules, the model finally outputs **correct Top-1 prediction**.
+Here is one of the cases: classifying an image with ground-truth label **1** by the global model (Visual backbone) outputs the **wrong Top-1 prediction**, while the correct prediction is at **Top-4**. By refining of the VSHC and MMGF modules, the model finally outputs the **correct Top-1 prediction**.
 
 > Sample 0, Ground Truth label: 1
 
@@ -28,15 +28,15 @@ Here is one of the cases: classifying an image with ground-truth label **1** by 
 
 
 ## Training
-We also provide complete training code.
+We also provide complete training codes for reproduction. Please refer to [option](./opts.py) to see more parameters.
 ### Offline training
 ####
 **Obtaining FVSA model** for matching visual-semantic pairs and **creating Hierarchy**.
 
-    python train_offline.py --result_path result/ --path_stage1 result/ --art_epoch [EPOCH_OF_CLUSTER] --net_v [BACKBONE]
+    python train_offline.py --result_path result/ --hierarchy_path [PATH_HIERARCHY] --art_epoch [EPOCH_OF_CLUSTER] --net_v [BACKBONE]
 ### Online training
 Training **MMGF model** and **Fusion model**.
 
-    python train_oneline.py --result_path result/ --path_stage1 result/ --art_epoch [EPOCH_OF_CLUSTER] --net_v [BACKBONE]
+    python train_oneline.py --result_path result/ --hierarchy_path [PATH_HIERARCHY] --art_epoch [EPOCH_OF_CLUSTER] --net_v [BACKBONE]
 ## Testing
     python test.py --path_stage1 [PATH_HIERARCHY] --art_epoch [EPOCH_OF_CLUSTER] --net_v [BACKBONE]

@@ -5,7 +5,7 @@ def opt_algorithm():
     parser.add_argument('--dataset', type=str, default= 'food101',help='indicator to dataset')
     # path setting
     parser.add_argument('--result_path', type=str, default= 'result/',help='path to the folder to save results')
-    parser.add_argument('--hierarchy_path', type=str, default= 'hierarchy/',help='path to the folder to save stage 1 results')
+    parser.add_argument('--hierarchy_path', type=str, default= 'hierarchy/',help='path to the folder to save hierarchy')
     
     # experiment controls
     parser.add_argument('--net_v', type=str, default= 'resnet18',help='choose network backbone for image channel')
