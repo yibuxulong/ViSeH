@@ -1,16 +1,13 @@
 # ViSeH
 ## Overview
-***
 This project includes source codes and examples of ViSeH. 
 
 For quick start of using ViSeH, we provide runnable testing examples, including [pretrained models](./model_save/resnet18), a [sub-hierarchy](./hierarchy), and several [samples](./data_food101_demo) from the Ingredient-101 tesing set.
 ## Environment
-***
 * Pytorch >= 1.10.2
 * Python >= 3.6.5
 * torchvision >= 0.2.1
 ## Demo
-***
 We provide some samples
 
     python test.py --result_path result/ --path_stage1 hierarchy/ --art_epoch 2
@@ -31,7 +28,6 @@ Here is one of the cases: classifying an image with ground-truth label **1** by 
 
 
 ## Training
-***
 We also provide complete training code.
 ### Offline training
 ####
@@ -43,5 +39,4 @@ Training **MMGF model** and **Fusion model**.
 
     python train_oneline.py --result_path result/ --path_stage1 result/ --art_epoch [EPOCH_OF_CLUSTER] --net_v [BACKBONE]
 ## Testing
-***
     python test.py --path_stage1 [PATH_HIERARCHY] --art_epoch [EPOCH_OF_CLUSTER] --net_v [BACKBONE]
