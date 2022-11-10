@@ -36,9 +36,11 @@ We also provide complete training code.
 ### Offline training
 ####
 **Obtaining FVSA model** for matching visual-semantic pairs and **creating Hierarchy**.
+
     python train_offline.py --result_path result/ --path_stage1 result/ --art_epoch [EPOCH_OF_CLUSTER] --net_v [BACKBONE]
 ### Online training
 Training **MMGF model** and **Fusion model**.
+
     python train_oneline.py --result_path result/ --path_stage1 result/ --art_epoch [EPOCH_OF_CLUSTER] --net_v [BACKBONE]
 ## Testing
 ***
