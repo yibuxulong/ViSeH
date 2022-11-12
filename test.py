@@ -79,17 +79,13 @@ opt.feature_min = torch.from_numpy(tensor_normalizer['feature_min']).cuda()
 
 # model define
 import build_model
-# modify
-# opt.method = 'vshc'
+
 opt.method = 'vsrf'
-# model_vshc = build_model.build(CUDA,opt)
 model_vsrf = build_model.build(CUDA,opt)
 
 # feature & decision generation
 # modify
-# test_functions.get_decision_of_vshc(test_loader, model_vshc, 'test', opt)
 test_functions.get_decision_of_vsrf(test_loader, model_vsrf, 'test', opt)
-# del model_vshc, test_dataset, test_loader
 del model_vsrf, test_dataset, test_loader
 #----------------------------------------------------------Load 2: Load CAGL module---------------------------------------------------------------------
 # dataset
@@ -146,7 +142,6 @@ label = label_global
 pre_cagl = torch.topk(output_cagl, top_k_pre)[1]
 pre_global = torch.topk(output_global, top_k_pre)[1]
 # modify
-# pre_vshc = decision_classes_topk_test[:,:top_k_pre]
 pre_vsrf = decision_classes_topk_test[:,:top_k_pre]
 pre_refine = torch.topk(refined_decision, top_k_pre)[1]
 
