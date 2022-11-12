@@ -10,7 +10,7 @@ For quick start of using ViSeH, we provide runnable testing examples, including 
 ## Examples
 We provide some examples to demonstrate the mechanism of ViSeH.
 
-    python test.py --result_path result/ --path_stage1 hierarchy/ --art_epoch 2
+    python test.py --result_path result/ --hierarchy_path hierarchy/ --art_epoch 2
 
 Here is one of the cases: classifying an image with ground-truth label **1** by the global model (Visual backbone) outputs the **wrong Top-1 prediction**, while the correct prediction is at **Top-4**. By refining of the VSRF and CAGL modules, the model finally outputs the **correct Top-1 prediction**.
 
@@ -39,4 +39,4 @@ Training **CAGL model** and **Fusion model**.
 
     python train_oneline.py --result_path result/ --hierarchy_path [PATH_HIERARCHY] --art_epoch [EPOCH_OF_CLUSTER] --net_v [BACKBONE]
 ## Testing
-    python test.py --path_stage1 [PATH_HIERARCHY] --art_epoch [EPOCH_OF_CLUSTER] --net_v [BACKBONE]
+    python test.py --hierarchy_path [PATH_HIERARCHY] --art_epoch [EPOCH_OF_CLUSTER] --net_v [BACKBONE]
