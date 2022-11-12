@@ -28,7 +28,7 @@ Here is one of the cases: classifying an image with ground-truth label **1** by 
 
 
 ## Training
-We also provide complete training codes for reproduction. Please refer to [option](./opts.py) to see more parameters.
+We also provide training codes for reproduction. Please refer to [option](./opts.py) to see more parameters.
 ### Offline training
 ####
 **Obtaining FVSA model** for matching visual-semantic pairs and **creating Hierarchy**.
