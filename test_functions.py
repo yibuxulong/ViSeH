@@ -10,7 +10,7 @@ from torch import optim
 from torch.nn import functional as F
 from utils import *
 
-def get_decision_of_vshc(data_loader, model, mode, opt):
+def get_decision_of_vsrf(data_loader, model, mode, opt):
     model.eval()
     total_time = time.time()
     
@@ -50,13 +50,13 @@ def test_fusion(data_loader, model, opt):
     total_time = time.time()
     for batch_idx, (data, label) in enumerate(data_loader):        
         batch_size_cur = label.shape[0]
-        [feature_global, feature_mmgf] = data                  
+        [feature_global, feature_cagl] = data                  
         
         label = label.long().cuda()
         feature_global = feature_global.cuda()
-        feature_mmgf = feature_mmgf.cuda()
+        feature_cagl = feature_cagl.cuda()
         
-        _, pre_fusion = model(feature_global, feature_mmgf)
+        _, pre_fusion = model(feature_global, feature_cagl)
         
         if batch_idx==0:
             pre_fusion_all = torch.zeros((0, opt.num_cls))
@@ -64,7 +64,7 @@ def test_fusion(data_loader, model, opt):
     
     return pre_fusion_all
     
-def generate_feature_mmgf(data_loader, model, opt):
+def generate_feature_cagl(data_loader, model, opt):
     model.eval()
     with torch.no_grad():
         for batch_idx, (data, label) in enumerate(data_loader):
@@ -78,19 +78,19 @@ def generate_feature_mmgf(data_loader, model, opt):
             decision_words = decision_words.cuda()
             feature_v = feature_v.cuda()
 
-            feature_mmgf, output_mmgf = model(word_predicts, feature_v, decision_words)
+            feature_cagl, output_cagl = model(word_predicts, feature_v, decision_words)
             
             if batch_idx==0:
-                feature_mmgf_all = torch.zeros((0, feature_mmgf.shape[1]))
-                output_mmgf_all = torch.zeros((0, opt.num_cls))
+                feature_cagl_all = torch.zeros((0, feature_cagl.shape[1]))
+                output_cagl_all = torch.zeros((0, opt.num_cls))
                 label_all = torch.zeros(0)
-            feature_mmgf_all = torch.cat((feature_mmgf_all, feature_mmgf.cpu()), 0)
-            output_mmgf_all = torch.cat((output_mmgf_all, output_mmgf.cpu()), 0)
+            feature_cagl_all = torch.cat((feature_cagl_all, feature_cagl.cpu()), 0)
+            output_cagl_all = torch.cat((output_cagl_all, output_cagl.cpu()), 0)
             label_all = torch.cat((label_all, label.cpu()), 0)
 
-    print('MMGF features generated.')
+    print('CAGL features generated.')
 
-    return feature_mmgf_all.detach().cpu(), output_mmgf_all.detach().cpu(), label_all.detach().cpu()
+    return feature_cagl_all.detach().cpu(), output_cagl_all.detach().cpu(), label_all.detach().cpu()
 
 def generate_feature_global(data_loader, model, opt):    
     model.eval()

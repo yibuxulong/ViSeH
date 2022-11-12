@@ -77,7 +77,7 @@ class dataset_for_art(torch.utils.data.Dataset):
     def __len__(self):
         return len(self.wordIDs)
 
-class dataset_for_mmgf(torch.utils.data.Dataset):
+class dataset_for_cagl(torch.utils.data.Dataset):
     def __init__(self, label, feature_v, word_predicts, decision_classes_topk, decision_words):
         self.label = label.long()
         self.feature_v = feature_v

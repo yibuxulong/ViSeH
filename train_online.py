@@ -22,9 +22,9 @@ import opts
 
 #------Processing------
 # Step 1 Getting raw and knowledge-based predictions of words
-# Step 2: Training MMGF model for fusing outputs of FVSA and VSHC
+# Step 2: Training CAGL model for fusing outputs of FVSA and VSRF
 # Step 3: Training the global model (visual backbone)
-# Step 4: Later fusion of cross-modal features (from MMGF module) and glbal visual features (for global model).
+# Step 4: Later fusion of cross-modal features (from CAGL module) and glbal visual features (for global model).
 #----------------------
 
 #------Settings------
@@ -86,13 +86,13 @@ opt.feature_min = torch.from_numpy(tensor_normalizer['feature_min']).cuda()
 
 # model define
 import build_model
-opt.method = 'vshc'
-model_vshc = build_model.build(CUDA,opt)
+opt.method = 'vsrf'
+model_vsrf = build_model.build(CUDA,opt)
 
 # feature & decision generation
-train_functions.get_decision_of_vshc(train_loader, model_vshc, 'train', opt)
-del model_vshc, train_dataset, train_loader
-#------------------------------------Step 2: Training MMGF module for fusing outputs of FVSA and VSHC----------------------------------------------------
+train_functions.get_decision_of_vsrf(train_loader, model_vsrf, 'train', opt)
+del model_vsrf, train_dataset, train_loader
+#------------------------------------Step 2: Training CAGL module for fusing outputs of FVSA and VSRF----------------------------------------------------
 # dataset
 label_train = torch.load(opt.result_path+'/label_all_train.pt')
 word_predicts_train = torch.load(opt.result_path+'/model_predict_words_predicts_train.pt')
@@ -101,21 +101,21 @@ decision_words_train = torch.load(opt.result_path+'/decision_words_all_train.pt'
 feature_v_train = torch.load(opt.result_path+'/feature_v_all_train.pt')
 
 import build_dataset
-train_dataset_mmgf = build_dataset.dataset_for_mmgf(label_train, feature_v_train, word_predicts_train, decision_classes_topk_train, decision_words_train)
-train_loader_mmgf = torch.utils.data.DataLoader(train_dataset_mmgf, batch_size=opt.batch_size, shuffle=True, **kwargs)
+train_dataset_cagl = build_dataset.dataset_for_cagl(label_train, feature_v_train, word_predicts_train, decision_classes_topk_train, decision_words_train)
+train_loader_cagl = torch.utils.data.DataLoader(train_dataset_cagl, batch_size=opt.batch_size, shuffle=True, **kwargs)
 
-# MMGF model
-opt.method='mmgf'
-model_mmgf = build_model.build(CUDA,opt)
-optimizer_mmgf = train_functions.set_optimizer(model_mmgf,opt)
+# CAGL model
+opt.method='cagl'
+model_cagl = build_model.build(CUDA,opt)
+optimizer_cagl = train_functions.set_optimizer(model_cagl,opt)
 
 # raining
 
 for epoch in range(1, EPOCHS + 1):
-    train_functions.lr_scheduler(epoch, optimizer_mmgf, opt.lr_decay, opt.lrd_rate)
-    train_functions.train_mmgf(epoch, train_loader_mmgf, model_mmgf, optimizer_mmgf, opt)
+    train_functions.lr_scheduler(epoch, optimizer_cagl, opt.lr_decay, opt.lrd_rate)
+    train_functions.train_cagl(epoch, train_loader_cagl, model_cagl, optimizer_cagl, opt)
 
-torch.save(model_mmgf.state_dict(), model_save_path + 'model_mmgf.pt')
+torch.save(model_cagl.state_dict(), model_save_path + 'model_cagl.pt')
 
 #--------------------------------------------------------Step 3: Training global model----------------------------------------------------------------
 # dataset
@@ -136,12 +136,12 @@ torch.save(model_global.state_dict(), model_save_path + 'model_global.pt')
 
 #---------------------------------------------------------------Step 4: Later fusion----------------------------------------------------------------------
 # dataset
-train_loader_mmgf = torch.utils.data.DataLoader(train_dataset_mmgf, batch_size=100, shuffle=False, **kwargs)
+train_loader_cagl = torch.utils.data.DataLoader(train_dataset_cagl, batch_size=100, shuffle=False, **kwargs)
 train_loader_global = torch.utils.data.DataLoader(train_dataset_global, batch_size=100, shuffle=False, **kwargs)
-feature_mmgf, label_mmgf = train_functions.generate_feature_mmgf(train_loader_mmgf, model_mmgf)
+feature_cagl, label_cagl = train_functions.generate_feature_cagl(train_loader_cagl, model_cagl)
 feature_global, label_global = train_functions.generate_feature_global(train_loader_global, model_global)
 
-train_dataset_fusion = build_dataset.dataset_for_fusion(feature_global, feature_mmgf, label_global)
+train_dataset_fusion = build_dataset.dataset_for_fusion(feature_global, feature_cagl, label_global)
 train_loader_fusion = torch.utils.data.DataLoader(train_dataset_fusion, batch_size=opt.batch_size, shuffle=True, **kwargs)
 
 # model

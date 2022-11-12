@@ -181,7 +181,7 @@ def generate_feature_fvsa(data_loader, model, mode, opt):
         
 #---------------------------------------------------- functions in training stage 2 ----------------------------------------------------------------------
 
-def get_decision_of_vshc(data_loader, model, mode, opt):
+def get_decision_of_vsrf(data_loader, model, mode, opt):
     acc1_v = AverageMeter('Acc@1', ':6.2f')
     acc5_v = AverageMeter('Acc@5', ':6.2f')
     
@@ -233,7 +233,7 @@ def get_decision_of_vshc(data_loader, model, mode, opt):
     torch.save(label_all, opt.result_path+'/label_all_{}.pt'.format(mode)) 
     
     
-def train_mmgf(epoch, data_loader, model, optimizer, opt):
+def train_cagl(epoch, data_loader, model, optimizer, opt):
     acc1_v = AverageMeter('Acc@1', ':6.2f')
     acc5_v = AverageMeter('Acc@5', ':6.2f')
     losses = AverageMeter('Loss', ':.4e')
@@ -280,7 +280,7 @@ def train_mmgf(epoch, data_loader, model, optimizer, opt):
             epoch, batch_idx, len(data_loader), data_time=round((time.time() - total_time), 4), loss=losses, loss_v=loss_cls_v.item(), acc1_v=acc1_v, acc5_v=acc5_v, lr=optimizer_cur.param_groups[-1]['lr']))
         print(log_out)
         
-def generate_feature_mmgf(data_loader, model):
+def generate_feature_cagl(data_loader, model):
     model.eval()
     with torch.no_grad():
         for batch_idx, (data, label) in enumerate(data_loader):
@@ -291,14 +291,14 @@ def generate_feature_mmgf(data_loader, model):
             decision_words = decision_words.cuda()
             feature_v = feature_v.cuda()
 
-            feature_mmgf, _ = model(word_predicts, feature_v, decision_words)
+            feature_cagl, _ = model(word_predicts, feature_v, decision_words)
             if batch_idx==0:
-                feature_mmgf_all = torch.zeros((0, feature_mmgf.shape[1]))
+                feature_cagl_all = torch.zeros((0, feature_cagl.shape[1]))
                 label_all = torch.zeros(0)
-            feature_mmgf_all = torch.cat((feature_mmgf_all, feature_mmgf.cpu()), 0)
+            feature_cagl_all = torch.cat((feature_cagl_all, feature_cagl.cpu()), 0)
             label_all = torch.cat((label_all, label.cpu()), 0)
-    print('MMGF features generated.')
-    return feature_mmgf_all.detach().cpu(), label_all.detach().cpu()
+    print('CAGL features generated.')
+    return feature_cagl_all.detach().cpu(), label_all.detach().cpu()
 
 def generate_feature_global(data_loader, model):
     model.eval()
@@ -376,15 +376,15 @@ def train_fusion(epoch, data_loader, model, optimizer, opt):
     model.train()
     total_time = time.time()
     for batch_idx, (data, label) in enumerate(data_loader):
-        [feature_global, feature_mmgf] = data        
+        [feature_global, feature_cagl] = data
         start_time = time.time()           
         # prediction and loss
         batch_size_cur = label.shape[0]
         label = label.long().cuda()
         feature_global = feature_global.cuda()
-        feature_mmgf = feature_mmgf.cuda()
+        feature_cagl = feature_cagl.cuda()
         
-        _, pre_fusion = model(feature_global, feature_mmgf)
+        _, pre_fusion = model(feature_global, feature_cagl)
         # loss
         criterion_cls = nn.CrossEntropyLoss()
         loss_fusion = criterion_cls(pre_fusion, label)

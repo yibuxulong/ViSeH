@@ -12,19 +12,19 @@ We provide some examples to demonstrate the mechanism of ViSeH.
 
     python test.py --result_path result/ --path_stage1 hierarchy/ --art_epoch 2
 
-Here is one of the cases: classifying an image with ground-truth label **1** by the global model (Visual backbone) outputs the **wrong Top-1 prediction**, while the correct prediction is at **Top-4**. By refining of the VSHC and MMGF modules, the model finally outputs the **correct Top-1 prediction**.
+Here is one of the cases: classifying an image with ground-truth label **1** by the global model (Visual backbone) outputs the **wrong Top-1 prediction**, while the correct prediction is at **Top-4**. By refining of the VSRF and CAGL modules, the model finally outputs the **correct Top-1 prediction**.
 
 > Sample 0, Ground Truth label: 1
 
-> Top-1 Class prediction: Global model: [20], VSHC: [1], MMGF: [1] | final prediction: [1]
+> Top-1 Class prediction: Global model: [20], VSRF: [1], CAGL: [1] | final prediction: [1]
 
-> Top-2 Class prediction: Global model: [77], VSHC: [1], MMGF: [50]
+> Top-2 Class prediction: Global model: [77], VSRF: [1], CAGL: [50]
 
-> Top-3 Class prediction: Global model: [38], VSHC: [77], MMGF: [20]
+> Top-3 Class prediction: Global model: [38], VSRF: [77], CAGL: [20]
 
-> Top-4 Class prediction: Global model: [1], VSHC: [1], MMGF: [23]
+> Top-4 Class prediction: Global model: [1], VSRF: [1], CAGL: [23]
 
-> Top-5 Class prediction: Global model: [42], VSHC: [1], MMGF: [77]
+> Top-5 Class prediction: Global model: [42], VSRF: [1], CAGL: [77]
 
 
 ## Training
@@ -35,7 +35,7 @@ We also provide complete training codes for reproduction. Please refer to [optio
 
     python train_offline.py --result_path result/ --hierarchy_path [PATH_HIERARCHY] --art_epoch [EPOCH_OF_CLUSTER] --net_v [BACKBONE]
 ### Online training
-Training **MMGF model** and **Fusion model**.
+Training **CAGL model** and **Fusion model**.
 
     python train_oneline.py --result_path result/ --hierarchy_path [PATH_HIERARCHY] --art_epoch [EPOCH_OF_CLUSTER] --net_v [BACKBONE]
 ## Testing

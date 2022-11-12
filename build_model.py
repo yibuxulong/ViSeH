@@ -149,9 +149,9 @@ class FVSA(nn.Module):
 
 
 
-class VSHC(nn.Module):
+class VSRF(nn.Module):
     def __init__(self, patch2word, dim_v, num_cls, num_words, top, cluster_weights, cluster_label_indicators, valid_cluster_class, feature_max, feature_min):
-        super(VSHC, self).__init__()
+        super(VSRF, self).__init__()
         [top_cls, top_seq, top_pos, topk] = top
         self.num_words = num_words
         self.num_cls = num_cls
@@ -302,9 +302,9 @@ class VSHC(nn.Module):
                 nn.init.normal_(m.weight, 0, 0.01)
                 
 
-class MMGF(nn.Module):
+class CAGL(nn.Module):
     def __init__(self, dim_v, num_cls, num_words, topk, beta_know, beta_relation):
-        super(MMGF, self).__init__()
+        super(CAGL, self).__init__()
         
         self.num_words = num_words
         self.num_cls = num_cls
@@ -344,13 +344,13 @@ class MMGF(nn.Module):
         max = torch.max(data, dim=2)[0].unsqueeze(2).expand(data.shape[0],data.shape[1],data.shape[2])  
         return (data - min)/(max-min)
     
-    def refine_word_pre(self, model_pre, vshc_pre, k, beta):
+    def refine_word_pre(self, model_pre, vsrf_pre, k, beta):
         model_pre_minmax = self.minmax_oprtator(model_pre)
         model_pre = torch.max(model_pre_minmax, dim=1)[0]
         
-        vshc_pre = torch.sum(F.one_hot(vshc_pre.long(), self.num_words), dim=1).float()
+        vsrf_pre = torch.sum(F.one_hot(vsrf_pre.long(), self.num_words), dim=1).float()
         
-        predicts_refine = (1.-beta) * self.softmax(model_pre) + self.softmax(vshc_pre) * beta
+        predicts_refine = (1.-beta) * self.softmax(model_pre) + self.softmax(vsrf_pre) * beta
         
         predicts_topk_id = torch.sort(predicts_refine, dim=1, descending=True)[1][:,:k] #(64,25)
         predicts_topk_pre = torch.sort(predicts_refine, dim=1, descending=True)[0][:,:k] #(64,25)
@@ -397,14 +397,14 @@ class FeatureFusion(nn.Module):
         self.linearl2g = nn.Linear(dim_v*2, dim_v)
         
         self.classifier = nn.Linear(dim_v, num_class)
-        self.beta = 0.7
+        self.beta = 0.6
         self._initialize_weights()
         
 
-    def forward(self, feature_global, feature_mmgf):
+    def forward(self, feature_global, feature_cagl):
         feature_global = self.linearg2g(feature_global)
-        feature_mmgf = self.linearl2g(feature_mmgf)
-        feature_fusion = ((1.-self.beta) * feature_global) + (feature_mmgf * self.beta)
+        feature_cagl = self.linearl2g(feature_cagl)
+        feature_fusion = ((1.-self.beta) * feature_global) + (feature_cagl * self.beta)
         output = self.classifier(feature_fusion)
         return feature_fusion, output
 
@@ -470,14 +470,14 @@ def build(CUDA, opt):
     elif opt.method=='fvsa':
         encoder_v = select_visual_network(opt.net_v, opt.size_img, opt, return_fm=True)
         model = FVSA(CUDA, encoder_v, dim_feat_v, opt.num_words)
-    elif opt.method=='vshc':
+    elif opt.method=='vsrf':
         encoder_v = select_visual_network(opt.net_v, opt.size_img, opt, return_fm=True)
         model_fvsa = FVSA(CUDA, encoder_v, dim_feat_v, opt.num_words)
         # load model in task2
         model_fvsa = get_updateModel(model_fvsa, opt.path_fvsa)
-        model = VSHC(model_fvsa, dim_feat_v, opt.num_cls, opt.num_words, [opt.top_cls, opt.top_seq, opt.top_pos, opt.topk], opt.cluster_weights, opt.cluster_label_indicators, opt.valid_cluster_class, opt.feature_max, opt.feature_min)    
-    elif opt.method=='mmgf':
-        model = MMGF(dim_feat_v, opt.num_cls, opt.num_words, opt.topk, opt.beta_know, opt.beta_relation)
+        model = VSRF(model_fvsa, dim_feat_v, opt.num_cls, opt.num_words, [opt.top_cls, opt.top_seq, opt.top_pos, opt.topk], opt.cluster_weights, opt.cluster_label_indicators, opt.valid_cluster_class, opt.feature_max, opt.feature_min)
+    elif opt.method=='cagl':
+        model = CAGL(dim_feat_v, opt.num_cls, opt.num_words, opt.topk, opt.beta_know, opt.beta_relation)
     elif opt.method=='fusion':
         model = FeatureFusion(dim_feat_v, opt.num_cls)
     if CUDA:        

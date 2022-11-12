@@ -39,7 +39,7 @@ def opt_algorithm():
     parser.add_argument('--top_pos', type=int, default = 5,help='top pos in each seq')
     parser.add_argument('--top_seq', type=int, default = 9,help='top seq, default: the mean of words in dataset')
 
-    # VSHC param
+    # VSRF param
     parser.add_argument('--beta_know', type=float, default = 0.1, help='weight of relation refine')
     
     parser.add_argument('--art_alpha', type=float, default = 1e-2, help='choice parameter of ART')
@@ -49,7 +49,7 @@ def opt_algorithm():
     parser.add_argument('--art_P_T', type=float, default = 0.6, help='decision rate of dominant class')
     parser.add_argument('--art_epoch', type=int, default = 2, help='decision rate of dominant class')
     
-    # MMGF param
+    # CAGL param
     parser.add_argument('--beta_relation', type=float, default = 0.2, help='relation weight of gcn')    
     parser.add_argument('--beta_fusion', type=float, default = 0.3, help='weight of decision')
     

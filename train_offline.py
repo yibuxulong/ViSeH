@@ -89,7 +89,7 @@ torch.save(model_fvsa.state_dict(), model_save_path + 'model_fvsa.pt')
 train_functions.generate_feature_fvsa(train_loader, model_fvsa, 'train', opt)
 
 #-----------------------------------------------------Step 2: Clustering the visual-semantic pairs-------------------------------------------------------
-# parameters of VSHC creation
+# parameters of VSRF creation
 epoch_cluster = opt.art_epoch
 
 cluster_path = opt.result_path + str(opt.art_rho_0) + '~' + str(opt.art_beta)+'/'
